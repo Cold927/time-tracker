@@ -1,0 +1,12 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Документация по сервису тайм трекера",
+        "title": "Time Tracker API",
+        "contact": {},
+        "version": "1"
+    },
+    "host": "localhost:8500",
+    "basePath": "/api/v1",
+    "paths": {}
+}

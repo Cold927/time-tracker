@@ -1,0 +1,9 @@
+basePath: /api/v1
+host: localhost:8500
+info:
+  contact: {}
+  description: Документация по сервису тайм трекера
+  title: Time Tracker API
+  version: "1"
+paths: {}
+swagger: "2.0"
