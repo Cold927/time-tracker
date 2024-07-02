@@ -5,5 +5,18 @@ info:
   description: Документация по сервису тайм трекера
   title: Time Tracker API
   version: "1"
-paths: {}
+paths:
+  /users/create:
+    post:
+      consumes:
+      - application/json
+      description: Создает нового пользователя
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Создает нового пользователя
+      tags:
+      - Users
 swagger: "2.0"

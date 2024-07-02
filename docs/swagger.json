@@ -8,5 +8,27 @@
     },
     "host": "localhost:8500",
     "basePath": "/api/v1",
-    "paths": {}
+    "paths": {
+        "/users/create": {
+            "post": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Создает нового пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Создает нового пользователя",
+                "responses": {}
+            }
+        }
+    }
 }

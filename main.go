@@ -6,6 +6,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	_ "time-tracker/docs"
+	"time-tracker/handlers"
 )
 
 // @title Time Tracker API
@@ -21,7 +22,7 @@ func main() {
 
 	user := people.Group("/users")
 	{
-		user.POST("/create")
+		user.POST("/create", handlers.CreateUser)
 		user.GET("/list")
 		user.GET("/list/:id")
 
