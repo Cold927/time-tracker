@@ -26,7 +26,6 @@ func setSwaggerInfo() {
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:" + os.Getenv("APP_PORT")
 	docs.SwaggerInfo.BasePath = "/api/v1"
-	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 }
 
 /*
@@ -54,10 +53,9 @@ func loadEnv() {
 */
 func serveApplication() {
 	router := gin.Default()
-	people := router.Group("/users")
-	tasks := router.Group("/tasks")
+	v1 := router.Group("/api/v1")
 
-	user := people.Group("/users")
+	user := v1.Group("/users")
 	{
 		user.POST("/create", controller.CreateUser)
 		user.PATCH("/change", controller.ChangeUserData)
@@ -66,7 +64,7 @@ func serveApplication() {
 		user.DELETE("/delete", controller.DeleteUser)
 	}
 
-	task := tasks.Group("/tasks")
+	task := v1.Group("/tasks")
 	{
 		task.POST("/countdown/start", controller.TaskCountdownStart)
 		task.PATCH("/countdown/end", controller.TaskCountdownEnd)

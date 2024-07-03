@@ -1,3 +1,27 @@
+definitions:
+  controller.errResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  controller.userResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
+    type: object
+  model.User:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -35,8 +59,6 @@ paths:
       produces:
       - application/json
       responses: {}
-      security:
-      - bearerToken: []
       summary: Изменение данных пользователя
       tags:
       - Users
@@ -45,11 +67,24 @@ paths:
       consumes:
       - application/json
       description: Создает нового пользователя
+      parameters:
+      - description: Новый пользователь
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
       produces:
       - application/json
-      responses: {}
-      security:
-      - bearerToken: []
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controller.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.errResponse'
       summary: Создает нового пользователя
       tags:
       - Users
@@ -61,8 +96,6 @@ paths:
       produces:
       - application/json
       responses: {}
-      security:
-      - bearerToken: []
       summary: Удаление пользователя
       tags:
       - Users
@@ -73,13 +106,19 @@ paths:
       description: Получение данных о всех пользователях
       produces:
       - application/json
-      responses: {}
-      security:
-      - bearerToken: []
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controller.errResponse'
       summary: Получение данных о всех пользователях
       tags:
       - Users
-  /users/list/:id:
+  /users/list/{id}:
     get:
       consumes:
       - application/json
@@ -87,8 +126,6 @@ paths:
       produces:
       - application/json
       responses: {}
-      security:
-      - bearerToken: []
       summary: Получение данных о пользователе по ID
       tags:
       - Users

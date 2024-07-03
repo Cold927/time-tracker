@@ -59,11 +59,6 @@ const docTemplate = `{
         },
         "/users/change": {
             "patch": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Изменение данных пользователя",
                 "consumes": [
                     "application/json"
@@ -80,11 +75,6 @@ const docTemplate = `{
         },
         "/users/create": {
             "post": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Создает нового пользователя",
                 "consumes": [
                     "application/json"
@@ -96,16 +86,35 @@ const docTemplate = `{
                     "Users"
                 ],
                 "summary": "Создает нового пользователя",
-                "responses": {}
+                "parameters": [
+                    {
+                        "description": "Новый пользователь",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/controller.userResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.errResponse"
+                        }
+                    }
+                }
             }
         },
         "/users/delete": {
             "delete": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Изменение данных пользователя",
                 "consumes": [
                     "application/json"
@@ -122,11 +131,6 @@ const docTemplate = `{
         },
         "/users/list": {
             "get": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Получение данных о всех пользователях",
                 "consumes": [
                     "application/json"
@@ -138,16 +142,24 @@ const docTemplate = `{
                     "Users"
                 ],
                 "summary": "Получение данных о всех пользователях",
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.userResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controller.errResponse"
+                        }
+                    }
+                }
             }
         },
-        "/users/list/:id": {
+        "/users/list/{id}": {
             "get": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Получение данных о пользователе по ID",
                 "consumes": [
                     "application/json"
@@ -160,6 +172,44 @@ const docTemplate = `{
                 ],
                 "summary": "Получение данных о пользователе по ID",
                 "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "controller.errResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.userResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                }
             }
         }
     }
