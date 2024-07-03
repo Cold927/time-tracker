@@ -6,6 +6,45 @@ info:
   title: Time Tracker API
   version: "1"
 paths:
+  /tasks/countdown/end:
+    patch:
+      consumes:
+      - application/json
+      description: Закончить отсчет времени по задаче для пользователя
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Закончить отсчет времени по задаче для пользователя
+      tags:
+      - Tasks
+  /tasks/countdown/start:
+    post:
+      consumes:
+      - application/json
+      description: Начать отсчет времени по задаче для пользователя
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Начать отсчет времени по задаче для пользователя
+      tags:
+      - Tasks
+  /users/change:
+    patch:
+      consumes:
+      - application/json
+      description: Изменение данных пользователя
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Изменение данных пользователя
+      tags:
+      - Users
   /users/create:
     post:
       consumes:
@@ -17,6 +56,45 @@ paths:
       security:
       - bearerToken: []
       summary: Создает нового пользователя
+      tags:
+      - Users
+  /users/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Изменение данных пользователя
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Удаление пользователя
+      tags:
+      - Users
+  /users/list:
+    get:
+      consumes:
+      - application/json
+      description: Получение данных о всех пользователях
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Получение данных о всех пользователях
+      tags:
+      - Users
+  /users/list/:id:
+    get:
+      consumes:
+      - application/json
+      description: Получение данных о пользователе по ID
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - bearerToken: []
+      summary: Получение данных о пользователе по ID
       tags:
       - Users
 swagger: "2.0"

@@ -15,6 +15,69 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/tasks/countdown/end": {
+            "patch": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Закончить отсчет времени по задаче для пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Закончить отсчет времени по задаче для пользователя",
+                "responses": {}
+            }
+        },
+        "/tasks/countdown/start": {
+            "post": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Начать отсчет времени по задаче для пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Начать отсчет времени по задаче для пользователя",
+                "responses": {}
+            }
+        },
+        "/users/change": {
+            "patch": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Изменение данных пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Изменение данных пользователя",
+                "responses": {}
+            }
+        },
         "/users/create": {
             "post": {
                 "security": [
@@ -33,6 +96,69 @@ const docTemplate = `{
                     "Users"
                 ],
                 "summary": "Создает нового пользователя",
+                "responses": {}
+            }
+        },
+        "/users/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Изменение данных пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Удаление пользователя",
+                "responses": {}
+            }
+        },
+        "/users/list": {
+            "get": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Получение данных о всех пользователях",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Получение данных о всех пользователях",
+                "responses": {}
+            }
+        },
+        "/users/list/:id": {
+            "get": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Получение данных о пользователе по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Получение данных о пользователе по ID",
                 "responses": {}
             }
         }
