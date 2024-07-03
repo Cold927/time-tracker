@@ -1,5 +1,5 @@
 # IDE
 .idea
 
-# Env
 .env.local
+/tmp

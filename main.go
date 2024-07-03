@@ -44,7 +44,7 @@ func loadDatabase() {
 func loadEnv() {
 	err := godotenv.Load(".env.local")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Ошибка при загрузке .env файла")
 	}
 }
 
