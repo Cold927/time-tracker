@@ -16,8 +16,13 @@ var task model.Task
 //	@Summary		Начать отсчет времени по задаче для пользователя
 //	@Description	Начать отсчет времени по задаче для пользователя
 //	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
 //	@Param			uid		path	uint		true	"ID пользователя"
 //	@Param			task	body	model.Task	false	"Описание задачи"
+//	@Success		200		{object}	utils.HTTPSuccess
+//	@Failure		400		{object}	utils.HTTPError
+//	@Failure		404		{object}	utils.HTTPError
 //	@Router			/tasks/countdown/start/{uid} [post]
 func TaskCountdownStart(c *gin.Context) {
 	id := c.Param("uid")
@@ -35,7 +40,7 @@ func TaskCountdownStart(c *gin.Context) {
 	task.UserID = uint(uid)
 	newTask, err := task.CountdownStart()
 	if err != nil {
-		utils.NewError(c, http.StatusBadRequest, err)
+		utils.NewError(c, http.StatusNotFound, err)
 		return
 	}
 
@@ -48,13 +53,18 @@ func TaskCountdownStart(c *gin.Context) {
 //	@Summary		Закончить отсчет времени по задаче для пользователя
 //	@Description	Закончить отсчет времени по задаче для пользователя
 //	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
 //	@Param			tid	path	string	true	"ID задачи"
+//	@Success		200		{object}	utils.HTTPSuccess
+//	@Failure		400		{object}	utils.HTTPError
+//	@Failure		404		{object}	utils.HTTPError
 //	@Router			/tasks/countdown/end/{tid} [patch]
 func TaskCountdownEnd(c *gin.Context) {
 	tid := c.Param("tid")
 	taskEnd, err := task.CountdownEnd(tid)
 	if err != nil {
-		utils.NewError(c, http.StatusBadRequest, err)
+		utils.NewError(c, http.StatusNotFound, err)
 		return
 	}
 

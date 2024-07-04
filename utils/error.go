@@ -14,3 +14,8 @@ type HTTPError struct {
 	Code    int    `json:"code" example:"400"`
 	Message string `json:"message" example:"Status: Bad Request"`
 }
+
+type HTTPSuccess struct {
+	Code    int    `json:"code" example:"200"`
+	Message string `json:"message" example:"Status: OK"`
+}

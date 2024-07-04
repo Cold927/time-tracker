@@ -36,11 +36,22 @@ definitions:
         example: 'Status: Bad Request'
         type: string
     type: object
+  utils.HTTPSuccess:
+    properties:
+      code:
+        example: 200
+        type: integer
+      message:
+        example: 'Status: OK'
+        type: string
+    type: object
 info:
   contact: {}
 paths:
   /tasks/countdown/end/{tid}:
     patch:
+      consumes:
+      - application/json
       description: Закончить отсчет времени по задаче для пользователя
       parameters:
       - description: ID задачи
@@ -48,12 +59,28 @@ paths:
         name: tid
         required: true
         type: string
-      responses: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.HTTPSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
       summary: Закончить отсчет времени по задаче для пользователя
       tags:
       - tasks
   /tasks/countdown/start/{uid}:
     post:
+      consumes:
+      - application/json
       description: Начать отсчет времени по задаче для пользователя
       parameters:
       - description: ID пользователя
@@ -66,7 +93,21 @@ paths:
         name: task
         schema:
           $ref: '#/definitions/model.Task'
-      responses: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.HTTPSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
       summary: Начать отсчет времени по задаче для пользователя
       tags:
       - tasks
@@ -108,8 +149,12 @@ paths:
       produces:
       - application/json
       responses:
-        "400":
-          description: Bad Request
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.HTTPSuccess'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/utils.HTTPError'
       summary: Удаление пользователя
@@ -129,8 +174,12 @@ paths:
       produces:
       - application/json
       responses:
-        "400":
-          description: Bad Request
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.userResponse'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/utils.HTTPError'
       summary: Получение данных о пользователе по ID
@@ -138,10 +187,18 @@ paths:
       - users
   /users/info:
     get:
+      consumes:
+      - application/json
       description: Получение данных о всех пользователях
       produces:
       - application/json
       responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/controller.userResponse'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -169,6 +226,10 @@ paths:
       produces:
       - application/json
       responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.userResponse'
         "400":
           description: Bad Request
           schema:

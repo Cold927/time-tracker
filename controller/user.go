@@ -52,6 +52,7 @@ func CreateUser(c *gin.Context) {
 //	@Produce		json
 //	@Param			id		path		string		true	"Идентификатор пользователя"
 //	@Param			user	body		model.User	true	"Изменение данных пользователя"
+//	@Success		200		{object}	userResponse
 //	@Failure		400		{object}	utils.HTTPError
 //	@Router			/users/update/{id} [patch]
 func UpdateUserData(c *gin.Context) {
@@ -74,7 +75,9 @@ func UpdateUserData(c *gin.Context) {
 //	@Summary		Получение данных о всех пользователях
 //	@Description	Получение данных о всех пользователях
 //	@Tags			users
+//	@Accept			json
 //	@Produce		json
+//	@Success		201	{array}		userResponse
 //	@Failure		400	{object}	utils.HTTPError
 //	@Router			/users/info [get]
 func GetUsersInfo(c *gin.Context) {
@@ -89,7 +92,8 @@ func GetUsersInfo(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		uint	true	"Идентификатор пользователя"
-//	@Failure		400	{object}	utils.HTTPError
+//	@Success		200	{object}	userResponse
+//	@Failure		404	{object}	utils.HTTPError
 //	@Router			/users/find/{id} [get]
 func GetUserById(c *gin.Context) {
 	id := c.Param("id")
@@ -108,7 +112,8 @@ func GetUserById(c *gin.Context) {
 //	@Description	Изменение данных пользователя
 //	@Tags			users
 //	@Produce		json
-//	@Failure		400	{object}	utils.HTTPError
+//	@Success		200	{object}	utils.HTTPSuccess
+//	@Failure		404	{object}	utils.HTTPError
 //	@Param			id	path		uint	true	"Идентификатор пользователя"
 //	@Router			/users/delete/{id} [delete]
 func DeleteUser(c *gin.Context) {
