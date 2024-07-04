@@ -53,47 +53,6 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/users/change": {
-            "patch": {
-                "description": "Изменение данных пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Изменение данных пользователя",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Идентификатор пользователя",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "description": "Изменение данных пользователя",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/users/create": {
             "post": {
                 "description": "Создает нового пользователя",
@@ -134,7 +93,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/delete": {
+        "/users/delete/{id}": {
             "delete": {
                 "description": "Изменение данных пользователя",
                 "produces": [
@@ -144,6 +103,15 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Удаление пользователя",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Идентификатор пользователя",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "400": {
                         "description": "Bad Request",
@@ -154,7 +122,39 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/list": {
+        "/users/find/{id}": {
+            "get": {
+                "description": "Получение данных о пользователе по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Получение данных о пользователе по ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Идентификатор пользователя",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/info": {
             "get": {
                 "description": "Получение данных о всех пользователях",
                 "produces": [
@@ -174,16 +174,37 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/list/{id}": {
-            "get": {
-                "description": "Получение данных о пользователе по ID",
+        "/users/update/{id}": {
+            "patch": {
+                "description": "Изменение данных пользователя",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "users"
                 ],
-                "summary": "Получение данных о пользователе по ID",
+                "summary": "Изменение данных пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Идентификатор пользователя",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Изменение данных пользователя",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
                 "responses": {
                     "400": {
                         "description": "Bad Request",

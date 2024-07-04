@@ -14,10 +14,26 @@ type User struct {
 	Tasks      []Task `json:"-"`
 }
 
-func (user *User) Save() (*User, error) {
+func (user User) Save() (User, error) {
 	err := database.Database.Create(&user).Error
 	if err != nil {
-		return &User{}, err
+		return User{}, err
+	}
+	return user, nil
+}
+
+func (user User) UpdateData(uid string, data any) (User, error) {
+	err := database.Database.Find(&user, "ID=?", uid).Updates(data).Error
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
+
+func (user User) FindUserById(uid string) (User, error) {
+	err := database.Database.Find(&user, "ID=?", uid).Error
+	if err != nil {
+		return User{}, err
 	}
 	return user, nil
 }
