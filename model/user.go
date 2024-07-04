@@ -15,16 +15,24 @@ type User struct {
 }
 
 func (user User) Save() (User, error) {
-	err := database.Database.Create(&user).Error
-	if err != nil {
+	if err := database.Database.Create(&user).Error; err != nil {
 		return User{}, err
 	}
 	return user, nil
 }
 
 func (user User) UpdateData(uid string, data User) (User, error) {
-	err := database.Database.Where("ID=?", uid).Updates(data).Error
-	if err != nil {
+	if err := database.Database.Where("ID=?", uid).Updates(data).Error; err != nil {
+		return User{}, err
+	}
+	return user, nil
+}
+func (user User) DeleteUser(uid string) (User, error) {
+	if err := database.Database.Delete(&Task{}, "User_ID=?", uid).Error; err != nil {
+		return User{}, err
+	}
+
+	if err := database.Database.Delete(&user, "ID=?", uid).Error; err != nil {
 		return User{}, err
 	}
 	return user, nil

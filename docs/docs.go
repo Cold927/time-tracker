@@ -145,7 +145,7 @@ const docTemplate = `{
                 "summary": "Получение данных о пользователе по ID",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "Идентификатор пользователя",
                         "name": "id",
                         "in": "path",

@@ -61,13 +61,14 @@ func serveApplication() {
 		user.PATCH("/update/:id", controller.UpdateUserData)
 		user.GET("/info", controller.GetUsersInfo)
 		user.GET("/find/:id", controller.GetUserById)
-		user.DELETE("/delete", controller.DeleteUser)
+		user.DELETE("/delete/:id", controller.DeleteUser)
 	}
 
 	task := v1.Group("/tasks")
 	{
 		task.POST("/countdown/start/:uid", controller.TaskCountdownStart)
 		task.PATCH("/countdown/end/:tid", controller.TaskCountdownEnd)
+		task.GET("/info")
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

@@ -88,7 +88,7 @@ func GetUsersInfo(c *gin.Context) {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string	true	"Идентификатор пользователя"
+//	@Param			id	path		uint	true	"Идентификатор пользователя"
 //	@Failure		400	{object}	utils.HTTPError
 //	@Router			/users/find/{id} [get]
 func GetUserById(c *gin.Context) {
@@ -109,8 +109,16 @@ func GetUserById(c *gin.Context) {
 //	@Tags			users
 //	@Produce		json
 //	@Failure		400	{object}	utils.HTTPError
-//	@Param			id	path		uint64	true	"Идентификатор пользователя"
+//	@Param			id	path		uint	true	"Идентификатор пользователя"
 //	@Router			/users/delete/{id} [delete]
 func DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+
+	deletedUser, err := user.DeleteUser(id)
+	if err != nil {
+		utils.NewError(c, http.StatusNotFound, err)
+		return
+	}
+	c.JSON(http.StatusOK, deletedUser)
 	fmt.Println("Пользователь удален")
 }
