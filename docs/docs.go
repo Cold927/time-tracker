@@ -17,43 +17,39 @@ const docTemplate = `{
     "paths": {
         "/tasks/countdown/end": {
             "patch": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Закончить отсчет времени по задаче для пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
-                    "Tasks"
+                    "tasks"
                 ],
                 "summary": "Закончить отсчет времени по задаче для пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID задачи",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {}
             }
         },
         "/tasks/countdown/start": {
             "post": {
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ],
                 "description": "Начать отсчет времени по задаче для пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
-                    "Tasks"
+                    "tasks"
                 ],
                 "summary": "Начать отсчет времени по задаче для пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID пользователя",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -67,10 +63,35 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "users"
                 ],
                 "summary": "Изменение данных пользователя",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Идентификатор пользователя",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Изменение данных пользователя",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
             }
         },
         "/users/create": {
@@ -83,7 +104,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "users"
                 ],
                 "summary": "Создает нового пользователя",
                 "parameters": [
@@ -107,7 +128,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controller.errResponse"
+                            "$ref": "#/definitions/utils.HTTPError"
                         }
                     }
                 }
@@ -116,43 +137,38 @@ const docTemplate = `{
         "/users/delete": {
             "delete": {
                 "description": "Изменение данных пользователя",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "users"
                 ],
                 "summary": "Удаление пользователя",
-                "responses": {}
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
             }
         },
         "/users/list": {
             "get": {
                 "description": "Получение данных о всех пользователях",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "users"
                 ],
                 "summary": "Получение данных о всех пользователях",
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.userResponse"
-                        }
-                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/controller.errResponse"
+                            "$ref": "#/definitions/utils.HTTPError"
                         }
                     }
                 }
@@ -161,29 +177,25 @@ const docTemplate = `{
         "/users/list/{id}": {
             "get": {
                 "description": "Получение данных о пользователе по ID",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "users"
                 ],
                 "summary": "Получение данных о пользователе по ID",
-                "responses": {}
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
-        "controller.errResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "controller.userResponse": {
             "type": "object",
             "properties": {
@@ -199,16 +211,33 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "г. Москва, ул. Ленина, д. 5, кв. 1"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иван"
                 },
                 "patronymic": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иванович"
                 },
                 "surname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иванов"
+                }
+            }
+        },
+        "utils.HTTPError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Status: Bad Request"
                 }
             }
         }
