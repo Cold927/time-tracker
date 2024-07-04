@@ -23,7 +23,7 @@ func (user User) Save() (User, error) {
 }
 
 func (user User) UpdateData(uid string, data any) (User, error) {
-	err := database.Database.Find(&user, "ID=?", uid).Updates(data).Error
+	err := database.Database.Where("ID=?", uid).Updates(data).Error
 	if err != nil {
 		return User{}, err
 	}

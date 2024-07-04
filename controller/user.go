@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
 	"time-tracker/model"
@@ -56,20 +55,18 @@ func CreateUser(c *gin.Context) {
 //	@Failure		400		{object}	utils.HTTPError
 //	@Router			/users/update/{id} [patch]
 func UpdateUserData(c *gin.Context) {
-	//if err := c.ShouldBindJSON(&user); err != nil {
-	//	utils.NewError(c, http.StatusBadRequest, err)
-	//	return
-	//}
-	data := c.ShouldBindBodyWith(c.Request.Body, binding.JSON)
 	id := c.Param("id")
-	fmt.Printf(`ID: %s, Data: %v`, id, data)
-	//updatedUser, err := user.UpdateData(id, data)
-	//if err != nil {
-	//	utils.NewError(c, http.StatusBadRequest, err)
-	//	return
-	//}
+	if err := c.ShouldBindJSON(&user); err != nil {
+		utils.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	updatedUser, err := user.UpdateData(id, user)
+	if err != nil {
+		utils.NewError(c, http.StatusBadRequest, err)
+		return
+	}
 	fmt.Println("Обновление данных о пользователе")
-	//c.JSON(http.StatusOK, updatedUser)
+	c.JSON(http.StatusOK, updatedUser)
 }
 
 // GetUsersInfo Получение данных о всех пользователях
