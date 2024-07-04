@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/tasks/countdown/end": {
+        "/tasks/countdown/end/{tid}": {
             "patch": {
                 "description": "Закончить отсчет времени по задаче для пользователя",
                 "tags": [
@@ -26,15 +26,15 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "ID задачи",
-                        "name": "id",
-                        "in": "query",
+                        "name": "tid",
+                        "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {}
             }
         },
-        "/tasks/countdown/start": {
+        "/tasks/countdown/start/{uid}": {
             "post": {
                 "description": "Начать отсчет времени по задаче для пользователя",
                 "tags": [
@@ -43,11 +43,19 @@ const docTemplate = `{
                 "summary": "Начать отсчет времени по задаче для пользователя",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID пользователя",
                         "name": "uid",
-                        "in": "query",
+                        "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Описание задачи",
+                        "name": "task",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.Task"
+                        }
                     }
                 ],
                 "responses": {}
@@ -225,6 +233,15 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.User"
                     }
+                }
+            }
+        },
+        "model.Task": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Новая задача"
                 }
             }
         },

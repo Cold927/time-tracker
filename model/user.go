@@ -7,11 +7,11 @@ import (
 
 type User struct {
 	gorm.Model `json:"-"`
-	Surname    string `json:"surname" gorm:"size:255;not null;" example:"Иванов"`
-	Name       string `json:"name" gorm:"size:255;not null;" example:"Иван"`
-	Patronymic string `json:"patronymic" gorm:"size:255;not null;" example:"Иванович"`
-	Address    string `json:"address" gorm:"size:255;not null;" example:"г. Москва, ул. Ленина, д. 5, кв. 1"`
-	Tasks      []Task `json:"-"`
+	Surname    string `json:"surname" gorm:"size:255;not null;type:text" example:"Иванов"`
+	Name       string `json:"name" gorm:"size:255;not null;type:text" example:"Иван"`
+	Patronymic string `json:"patronymic" gorm:"size:255;not null;type:text" example:"Иванович"`
+	Address    string `json:"address" gorm:"size:255;not null;type:text" example:"г. Москва, ул. Ленина, д. 5, кв. 1"`
+	Tasks      []Task `json:"-" gorm:"constraint:OnDelete:CASCADE,OnUpdate:CASCADE;"`
 }
 
 func (user User) Save() (User, error) {
@@ -22,7 +22,7 @@ func (user User) Save() (User, error) {
 	return user, nil
 }
 
-func (user User) UpdateData(uid string, data any) (User, error) {
+func (user User) UpdateData(uid string, data User) (User, error) {
 	err := database.Database.Where("ID=?", uid).Updates(data).Error
 	if err != nil {
 		return User{}, err

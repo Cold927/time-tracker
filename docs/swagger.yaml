@@ -6,6 +6,12 @@ definitions:
           $ref: '#/definitions/model.User'
         type: array
     type: object
+  model.Task:
+    properties:
+      description:
+        example: Новая задача
+        type: string
+    type: object
   model.User:
     properties:
       address:
@@ -33,28 +39,33 @@ definitions:
 info:
   contact: {}
 paths:
-  /tasks/countdown/end:
+  /tasks/countdown/end/{tid}:
     patch:
       description: Закончить отсчет времени по задаче для пользователя
       parameters:
       - description: ID задачи
-        in: query
-        name: id
+        in: path
+        name: tid
         required: true
         type: string
       responses: {}
       summary: Закончить отсчет времени по задаче для пользователя
       tags:
       - tasks
-  /tasks/countdown/start:
+  /tasks/countdown/start/{uid}:
     post:
       description: Начать отсчет времени по задаче для пользователя
       parameters:
       - description: ID пользователя
-        in: query
+        in: path
         name: uid
         required: true
-        type: string
+        type: integer
+      - description: Описание задачи
+        in: body
+        name: task
+        schema:
+          $ref: '#/definitions/model.Task'
       responses: {}
       summary: Начать отсчет времени по задаче для пользователя
       tags:
