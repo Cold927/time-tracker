@@ -2,9 +2,9 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"log"
 	"net/http"
-	"strconv"
 	"time-tracker/model"
 	"time-tracker/utils"
 )
@@ -18,7 +18,7 @@ var task model.Task
 //	@Tags			tasks
 //	@Accept			json
 //	@Produce		json
-//	@Param			uid		path	uint		true	"ID пользователя"
+//	@Param			uid		path	string		true	"ID пользователя"
 //	@Param			task	body	model.Task	false	"Описание задачи"
 //	@Success		200		{object}	utils.HTTPSuccess
 //	@Failure		400		{object}	utils.HTTPError
@@ -26,7 +26,7 @@ var task model.Task
 //	@Router			/tasks/countdown/start/{uid} [post]
 func TaskCountdownStart(c *gin.Context) {
 	id := c.Param("uid")
-	uid, err := strconv.ParseUint(id, 10, 0)
+	uid, err := uuid.Parse(id)
 	if err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
@@ -37,7 +37,7 @@ func TaskCountdownStart(c *gin.Context) {
 		return
 	}
 
-	task.UserID = uint(uid)
+	task.UserID = uid
 	newTask, err := task.CountdownStart()
 	if err != nil {
 		utils.NewError(c, http.StatusNotFound, err)

@@ -74,7 +74,7 @@ const docTemplate = `{
                 "summary": "Начать отсчет времени по задаче для пользователя",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID пользователя",
                         "name": "uid",
                         "in": "path",
@@ -131,7 +131,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.UserCreate"
                         }
                     }
                 ],
@@ -163,7 +163,7 @@ const docTemplate = `{
                 "summary": "Удаление пользователя",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Идентификатор пользователя",
                         "name": "id",
                         "in": "path",
@@ -201,7 +201,7 @@ const docTemplate = `{
                 "summary": "Получение данных о пользователе по ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Идентификатор пользователя",
                         "name": "id",
                         "in": "path",
@@ -283,7 +283,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.UserCreate"
                         }
                     }
                 ],
@@ -321,6 +321,10 @@ const docTemplate = `{
             "properties": {
                 "description": {
                     "type": "string",
+                    "example": "Описание задачи"
+                },
+                "title": {
+                    "type": "string",
                     "example": "Новая задача"
                 }
             }
@@ -332,9 +336,49 @@ const docTemplate = `{
                     "type": "string",
                     "example": "г. Москва, ул. Ленина, д. 5, кв. 1"
                 },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string",
                     "example": "Иван"
+                },
+                "passportNumber": {
+                    "type": "integer"
+                },
+                "passportSeries": {
+                    "type": "integer"
+                },
+                "patronymic": {
+                    "type": "string",
+                    "example": "Иванович"
+                },
+                "surname": {
+                    "type": "string",
+                    "example": "Иванов"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserCreate": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "г. Москва, ул. Ленина, д. 5, кв. 1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Иван"
+                },
+                "passportNumber": {
+                    "type": "string",
+                    "example": "1234 567890"
                 },
                 "patronymic": {
                     "type": "string",

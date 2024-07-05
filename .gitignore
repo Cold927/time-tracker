@@ -1,4 +1,6 @@
 # IDE
 .idea
 
+# Internal
+/tmp
 .env.local

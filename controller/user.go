@@ -14,6 +14,7 @@ type userResponse struct {
 }
 
 var user model.User
+var userCreate model.UserCreate
 
 // CreateUser Создает нового пользователя
 //
@@ -22,18 +23,17 @@ var user model.User
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			user	body		model.User	true	"Новый пользователь"
+//	@Param			user	body		model.UserCreate	true	"Новый пользователь"
 //	@Success		201		{object}	userResponse
 //	@Failure		400		{object}	utils.HTTPError
 //	@Router			/users/create [post]
 func CreateUser(c *gin.Context) {
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&userCreate); err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	savedUser, err := user.Save()
-
+	savedUser, err := user.Save(&userCreate)
 	if err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
@@ -50,8 +50,8 @@ func CreateUser(c *gin.Context) {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		string		true	"Идентификатор пользователя"
-//	@Param			user	body		model.User	true	"Изменение данных пользователя"
+//	@Param			id		path		string				true	"Идентификатор пользователя"
+//	@Param			user	body		model.UserCreate	true	"Изменение данных пользователя"
 //	@Success		200		{object}	userResponse
 //	@Failure		400		{object}	utils.HTTPError
 //	@Router			/users/update/{id} [patch]
@@ -91,7 +91,7 @@ func GetUsersInfo(c *gin.Context) {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		uint	true	"Идентификатор пользователя"
+//	@Param			id	path		string	true	"Идентификатор пользователя"
 //	@Success		200	{object}	userResponse
 //	@Failure		404	{object}	utils.HTTPError
 //	@Router			/users/find/{id} [get]
@@ -114,7 +114,7 @@ func GetUserById(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	utils.HTTPSuccess
 //	@Failure		404	{object}	utils.HTTPError
-//	@Param			id	path		uint	true	"Идентификатор пользователя"
+//	@Param			id	path		string	true	"Идентификатор пользователя"
 //	@Router			/users/delete/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")

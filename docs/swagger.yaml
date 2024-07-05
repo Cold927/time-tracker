@@ -9,6 +9,9 @@ definitions:
   model.Task:
     properties:
       description:
+        example: Описание задачи
+        type: string
+      title:
         example: Новая задача
         type: string
     type: object
@@ -17,8 +20,36 @@ definitions:
       address:
         example: г. Москва, ул. Ленина, д. 5, кв. 1
         type: string
+      created_at:
+        type: string
+      id:
+        type: string
       name:
         example: Иван
+        type: string
+      passportNumber:
+        type: integer
+      passportSeries:
+        type: integer
+      patronymic:
+        example: Иванович
+        type: string
+      surname:
+        example: Иванов
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.UserCreate:
+    properties:
+      address:
+        example: г. Москва, ул. Ленина, д. 5, кв. 1
+        type: string
+      name:
+        example: Иван
+        type: string
+      passportNumber:
+        example: 1234 567890
         type: string
       patronymic:
         example: Иванович
@@ -87,7 +118,7 @@ paths:
         in: path
         name: uid
         required: true
-        type: integer
+        type: string
       - description: Описание задачи
         in: body
         name: task
@@ -122,7 +153,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/model.User'
+          $ref: '#/definitions/model.UserCreate'
       produces:
       - application/json
       responses:
@@ -145,7 +176,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -170,7 +201,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -222,7 +253,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/model.User'
+          $ref: '#/definitions/model.UserCreate'
       produces:
       - application/json
       responses:
