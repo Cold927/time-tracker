@@ -142,6 +142,32 @@ paths:
       summary: Начать отсчет времени по задаче для пользователя
       tags:
       - tasks
+  /tasks/info:
+    get:
+      consumes:
+      - application/json
+      description: Получение трудозатрат по пользователю за период задача-сумма часов
+        и минут с сортировкой от большей затраты к меньшей
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Task'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Получение трудозатрат по пользователю
+      tags:
+      - tasks
   /users/create:
     post:
       consumes:
@@ -221,11 +247,44 @@ paths:
       consumes:
       - application/json
       description: Получение данных о всех пользователях
+      parameters:
+      - default: "1"
+        description: Укажите с какой страницы смотреть
+        in: query
+        name: page
+        type: string
+      - default: "10"
+        description: Укажите какое количество выводить
+        in: query
+        name: limit
+        type: string
+      - description: Сортировать данные
+        example: asc, desc
+        in: query
+        name: sort
+        type: string
+      - description: Поле для сортировки
+        example: Id, Surname, Name, Patronymic, Address, passport_series, passport_number
+        in: query
+        name: field
+        type: string
+      - description: Поиск по серии паспорта
+        in: query
+        name: passportSeries
+        type: integer
+      - description: Поиск по номеру паспорта
+        in: query
+        name: passportNumber
+        type: integer
+      - description: Поиск по полям
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             items:
               $ref: '#/definitions/controller.userResponse'

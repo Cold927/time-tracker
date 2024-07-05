@@ -9,8 +9,8 @@ import (
 	"os"
 	"time-tracker/controller"
 	"time-tracker/database"
+	"time-tracker/database/migration"
 	"time-tracker/docs"
-	"time-tracker/model"
 )
 
 func main() {
@@ -33,8 +33,13 @@ func setSwaggerInfo() {
 */
 func loadDatabase() {
 	database.Connect()
-	database.Database.AutoMigrate(&model.User{})
-	database.Database.AutoMigrate(&model.Task{})
+	// Добавление расширения для uuid
+	if err := database.Database.Exec(`
+        CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    `).Error; err != nil {
+	}
+	migration.StartUserMigration(database.Database)
+	migration.StartTaskMigration(database.Database)
 }
 
 /*
@@ -68,7 +73,7 @@ func serveApplication() {
 	{
 		task.POST("/countdown/start/:uid", controller.TaskCountdownStart)
 		task.PATCH("/countdown/end/:tid", controller.TaskCountdownEnd)
-		task.GET("/info")
+		task.GET("/info", controller.TasksInfo)
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

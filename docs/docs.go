@@ -111,6 +111,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/tasks/info": {
+            "get": {
+                "description": "Получение трудозатрат по пользователю за период задача-сумма часов и минут с сортировкой от большей затраты к меньшей",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Получение трудозатрат по пользователю",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Task"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/users/create": {
             "post": {
                 "description": "Создает нового пользователя",
@@ -237,9 +275,57 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Получение данных о всех пользователях",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "1",
+                        "description": "Укажите с какой страницы смотреть",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "10",
+                        "description": "Укажите какое количество выводить",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "asc, desc",
+                        "description": "Сортировать данные",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "Id, Surname, Name, Patronymic, Address, passport_series, passport_number",
+                        "description": "Поле для сортировки",
+                        "name": "field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Поиск по серии паспорта",
+                        "name": "passportSeries",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Поиск по номеру паспорта",
+                        "name": "passportNumber",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Поиск по полям",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {

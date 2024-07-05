@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"time-tracker/model"
 	"time-tracker/utils"
 )
@@ -57,11 +58,11 @@ func CreateUser(c *gin.Context) {
 //	@Router			/users/update/{id} [patch]
 func UpdateUserData(c *gin.Context) {
 	id := c.Param("id")
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&userCreate); err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	updatedUser, err := user.UpdateData(id, user)
+	updatedUser, err := user.UpdateData(id, &userCreate)
 	if err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
@@ -77,10 +78,40 @@ func UpdateUserData(c *gin.Context) {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Success		201	{array}		userResponse
-//	@Failure		400	{object}	utils.HTTPError
+//	@Param			page			query		string	false	"Укажите с какой страницы смотреть"	default(1)
+//	@Param			limit			query		string	false	"Укажите какое количество выводить"	default(10)
+//	@Param			sort			query		string	false	"Сортировать данные"				example(asc, desc)
+//	@Param			field			query		string	false	"Поле для сортировки"				example(Id, Surname, Name, Patronymic, Address, passport_series, passport_number)
+//	@Param			passportSeries	query		int		false	"Поиск по серии паспорта"
+//	@Param			passportNumber	query		int		false	"Поиск по номеру паспорта"
+//	@Param			search			query		string	false	"Поиск по полям"
+//	@Success		200				{array}		userResponse
+//	@Failure		400				{object}	utils.HTTPError
 //	@Router			/users/info [get]
 func GetUsersInfo(c *gin.Context) {
+	var pagination utils.Pagination
+	sort := c.DefaultQuery("field", "Id") + " " + c.DefaultQuery("sort", "desc")
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if err != nil {
+		utils.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	if err != nil {
+		utils.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	pagination.Page = page
+	pagination.Limit = limit
+	pagination.Sort = sort
+
+	listInfo, err := user.ListUsers(pagination)
+	if err != nil {
+		utils.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	c.JSON(http.StatusOK, listInfo)
 	fmt.Println("Получение данных о всех пользователях")
 }
 

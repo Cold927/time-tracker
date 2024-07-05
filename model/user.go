@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	ID             uuid.UUID      `gorm:"primarykey" json:"id"`
+	ID             uuid.UUID      `gorm:"primarykey;default:uuid_generate_v4()" json:"id"`
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at"`
 	DeletedAt      gorm.DeletedAt `gorm:"index" json:"-"`
@@ -17,9 +17,9 @@ type User struct {
 	Name           string         `gorm:"size:255;not null;type:text" json:"name" example:"Иван"`
 	Patronymic     string         `gorm:"size:255;not null;type:text" json:"patronymic" example:"Иванович"`
 	Address        string         `gorm:"size:255;not null;type:text" json:"address" example:"г. Москва, ул. Ленина, д. 5, кв. 1"`
-	PassportSeries int            `gorm:"uniqueIndex:idx_passport" json:"passportSeries"`
-	PassportNumber int            `gorm:"uniqueIndex:idx_passport" json:"passportNumber"`
-	Tasks          []Task         `json:"-"`
+	PassportSeries int            `gorm:"check:checker_passport_series,passport_series >= 1000 AND passport_series <= 9999;uniqueIndex:idx_passport;not null" json:"passportSeries"`
+	PassportNumber int            `gorm:"check:checker_passport_number,passport_number >= 100000 AND passport_number <= 999999;uniqueIndex:idx_passport;not null" json:"passportNumber"`
+	Tasks          []Task         `json:"-" gorm:"constraint:onUpdate:CASCADE,onDelete:CASCADE"`
 }
 
 type UserCreate struct {
@@ -28,11 +28,6 @@ type UserCreate struct {
 	Patronymic     string `json:"patronymic" example:"Иванович"`
 	Address        string `json:"address" example:"г. Москва, ул. Ленина, д. 5, кв. 1"`
 	PassportNumber string `json:"passportNumber" example:"1234 567890"`
-}
-
-func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
-	user.ID = uuid.New()
-	return
 }
 
 func (user User) Save(userCreate *UserCreate) (User, error) {
@@ -54,11 +49,31 @@ func (user User) Save(userCreate *UserCreate) (User, error) {
 	return newUser, nil
 }
 
-func (user User) UpdateData(uid string, data User) (User, error) {
-	if err := database.Database.Where("ID=?", uid).Updates(data).Error; err != nil {
+func (user User) UpdateData(uid string, data *UserCreate) (User, error) {
+	passportSeries, passportNumber, err := utils.ParsePassport(data.PassportNumber)
+	if err != nil {
 		return User{}, err
 	}
-	return user, nil
+	newUser := User{
+		Surname:        data.Surname,
+		Name:           data.Name,
+		Patronymic:     data.Patronymic,
+		Address:        data.Address,
+		PassportNumber: passportNumber,
+		PassportSeries: passportSeries,
+	}
+	if err := database.Database.Where("ID=?", uid).Updates(&newUser).Error; err != nil {
+		return User{}, err
+	}
+	return newUser, nil
+}
+
+func (user User) ListUsers(pagination utils.Pagination) (*utils.Pagination, error) {
+	var users []*User
+
+	database.Database.Scopes(utils.Paginate(&user, &pagination, database.Database)).Where("").Find(&users)
+	pagination.Rows = users
+	return &pagination, nil
 }
 
 func (user User) DeleteUser(uid string) (User, error) {

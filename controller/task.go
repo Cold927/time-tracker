@@ -18,8 +18,8 @@ var task model.Task
 //	@Tags			tasks
 //	@Accept			json
 //	@Produce		json
-//	@Param			uid		path	string		true	"ID пользователя"
-//	@Param			task	body	model.Task	false	"Описание задачи"
+//	@Param			uid		path		string		true	"ID пользователя"
+//	@Param			task	body		model.Task	false	"Описание задачи"
 //	@Success		200		{object}	utils.HTTPSuccess
 //	@Failure		400		{object}	utils.HTTPError
 //	@Failure		404		{object}	utils.HTTPError
@@ -55,10 +55,10 @@ func TaskCountdownStart(c *gin.Context) {
 //	@Tags			tasks
 //	@Accept			json
 //	@Produce		json
-//	@Param			tid	path	string	true	"ID задачи"
-//	@Success		200		{object}	utils.HTTPSuccess
-//	@Failure		400		{object}	utils.HTTPError
-//	@Failure		404		{object}	utils.HTTPError
+//	@Param			tid	path		string	true	"ID задачи"
+//	@Success		200	{object}	utils.HTTPSuccess
+//	@Failure		400	{object}	utils.HTTPError
+//	@Failure		404	{object}	utils.HTTPError
 //	@Router			/tasks/countdown/end/{tid} [patch]
 func TaskCountdownEnd(c *gin.Context) {
 	tid := c.Param("tid")
@@ -70,4 +70,19 @@ func TaskCountdownEnd(c *gin.Context) {
 
 	c.JSON(http.StatusOK, taskEnd)
 	log.Println("Countdown End")
+}
+
+// TasksInfo Получение трудозатрат по пользователю
+//
+//	@Summary		Получение трудозатрат по пользователю
+//	@Description	Получение трудозатрат по пользователю за период задача-сумма часов и минут с сортировкой от большей затраты к меньшей
+//	@Tags			tasks
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		model.Task
+//	@Failure		400	{object}	utils.HTTPError
+//	@Failure		404	{object}	utils.HTTPError
+//	@Router			/tasks/info [get]
+func TasksInfo(c *gin.Context) {
+	log.Println("Информация о трудозатратах")
 }
