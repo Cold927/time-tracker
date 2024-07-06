@@ -3,21 +3,20 @@ FROM golang:1.22.5-alpine as builder
 WORKDIR /app
 
 COPY go.* ./
+
 RUN go mod download
 
-COPY . ./
+COPY . .
 
-RUN go build -v -o server ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -a -installsuffix cgo -o server ./main.go
 
-FROM debian:12.4-slim
-RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive \
-    rm -rf /var/lib/apt/lists/*
+FROM alpine:latest
 
-COPY --from=builder /app/server /app/server
-COPY --from=builder /app/.env.docker /app/.env.docker
-COPY --from=builder /app/docs app/docs
+WORKDIR /root/
+
+COPY --from=builder /app .
 
 ENV APP_ENV docker
 ENV PORT ${Port}
 
-CMD [ "app/server" ]
+CMD [ "./server" ]

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 	"time-tracker/config"
 )
 
@@ -11,15 +12,23 @@ var Database *gorm.DB
 
 func Connect(cfg config.Config) {
 	var err error
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s TimeZone=Europe/Moscow",
-		cfg.Postgres.Host, cfg.Postgres.Port, cfg.Postgres.User, cfg.Postgres.Password,
-		cfg.Postgres.DbName, cfg.Postgres.SslMode)
-	Database, err = gorm.Open(postgres.Open(dsn))
 
+	dsnInit := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=%s TimeZone=Europe/Moscow",
+		cfg.Postgres.Host, cfg.Postgres.Port, cfg.Postgres.User, cfg.Postgres.Password,
+		cfg.Postgres.SslMode)
+	dsn := fmt.Sprintf("%s dbname=%s", dsnInit, cfg.Postgres.DbName)
+	Database, err = gorm.Open(postgres.Open(dsnInit))
+	count := 0
+	Database.Raw("SELECT count(*) FROM pg_database WHERE datname = ?", cfg.Postgres.DbName).Scan(&count)
+	if count == 0 {
+		sql := fmt.Sprintf("CREATE DATABASE %s", cfg.Postgres.DbName)
+		Database.Exec(sql)
+	}
+	Database, err = gorm.Open(postgres.Open(dsn))
 	if err != nil {
-		Database.Exec("CREATE DATABASE IF NOT EXISTS timetracker")
+		log.Fatal("Ошибка при открытии базы данных: ", err)
 	} else {
-		fmt.Println("Успешное подключение к базе данных")
+		log.Println("Успешное подключение к базе данных")
 	}
 
 	pgDb, _ := Database.DB()

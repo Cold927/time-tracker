@@ -22,7 +22,7 @@ func StartUserMigration(db *gorm.DB) {
 		db.Migrator().CreateConstraint(&model.User{}, "checker_passport_series")
 	}
 	if db.Find(&model.User{}).RowsAffected == 0 {
-		filePath, err := filepath.Abs("database/migration/users.json")
+		filePath, err := filepath.Abs("./users.json")
 		jsonFile, err := os.Open(filePath)
 		if err != nil {
 			log.Fatalf("Ошибка открытия файла: %v", err)

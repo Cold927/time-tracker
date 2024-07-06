@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
+	"os"
 )
 
 type Config struct {
@@ -31,7 +32,8 @@ func init() {
 }
 
 func GetConfig() (Config, error) {
-	_ = godotenv.Load(".env")
+	filePath := getConfigPath(os.Getenv("APP_ENV"))
+	_ = godotenv.Load(filePath)
 	cnf := Config{}
 	err := envconfig.Process("", &cnf)
 	return cnf, err
@@ -39,10 +41,10 @@ func GetConfig() (Config, error) {
 
 func getConfigPath(env string) string {
 	if env == "docker" {
-		return "/app/"
+		return "/app/.env"
 	} else if env == "production" {
 		return ".env.production"
 	} else {
-		return "$HOME/.env"
+		return ".env.local"
 	}
 }
