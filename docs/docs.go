@@ -85,7 +85,7 @@ const docTemplate = `{
                         "name": "task",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/model.Task"
+                            "$ref": "#/definitions/model.TaskCreate"
                         }
                     }
                 ],
@@ -111,9 +111,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/tasks/info": {
+        "/tasks/info/{uid}": {
             "get": {
-                "description": "Получение трудозатрат по пользователю за период задача-сумма часов и минут с сортировкой от большей затраты к меньшей",
+                "description": "Получение трудозатрат по пользователю за период задача-сумма часов и минут",
                 "consumes": [
                     "application/json"
                 ],
@@ -124,13 +124,38 @@ const docTemplate = `{
                     "tasks"
                 ],
                 "summary": "Получение трудозатрат по пользователю",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID пользователя",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "2024-07-01T00:00:00",
+                        "description": "Начальная дата",
+                        "name": "startDate",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "2024-07-01T23:59:59",
+                        "description": "Конечная дата",
+                        "name": "endDate",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Task"
+                                "$ref": "#/definitions/model.TaskResponse"
                             }
                         }
                     },
@@ -240,7 +265,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Идентификатор пользователя",
+                        "description": "ID пользователя",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -295,10 +320,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/controller.userResponse"
-                            }
+                            "$ref": "#/definitions/controller.userResponse"
                         }
                     },
                     "400": {
@@ -369,10 +391,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/controller.userResponse"
-                            }
+                            "$ref": "#/definitions/utils.Pagination"
                         }
                     },
                     "400": {
@@ -419,7 +438,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.userResponse"
+                            "$ref": "#/definitions/utils.HTTPSuccess"
                         }
                     },
                     "400": {
@@ -444,7 +463,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Task": {
+        "model.TaskCreate": {
             "type": "object",
             "properties": {
                 "description": {
@@ -454,6 +473,29 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "Новая задача"
+                }
+            }
+        },
+        "model.TaskResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "period_time": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },
@@ -541,6 +583,27 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Status: OK"
+                }
+            }
+        },
+        "utils.Pagination": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "rows": {},
+                "sort": {
+                    "type": "string"
+                },
+                "total_pages": {
+                    "type": "integer"
+                },
+                "total_rows": {
+                    "type": "integer"
                 }
             }
         }

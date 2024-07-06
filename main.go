@@ -74,7 +74,7 @@ func serveApplication() {
 	{
 		task.POST("/countdown/start/:uid", controller.TaskCountdownStart)
 		task.PATCH("/countdown/end/:tid", controller.TaskCountdownEnd)
-		task.GET("/info", controller.TasksInfo)
+		task.GET("/info/:uid", controller.TasksInfo)
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

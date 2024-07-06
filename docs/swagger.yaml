@@ -6,13 +6,28 @@ definitions:
           $ref: '#/definitions/model.User'
         type: array
     type: object
-  model.Task:
+  model.TaskCreate:
     properties:
       description:
         example: Описание задачи
         type: string
       title:
         example: Новая задача
+        type: string
+    type: object
+  model.TaskResponse:
+    properties:
+      description:
+        type: string
+      end_date:
+        type: string
+      period_time:
+        type: string
+      start_date:
+        type: string
+      status:
+        type: string
+      title:
         type: string
     type: object
   model.User:
@@ -76,6 +91,20 @@ definitions:
         example: 'Status: OK'
         type: string
     type: object
+  utils.Pagination:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      rows: {}
+      sort:
+        type: string
+      total_pages:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -123,7 +152,7 @@ paths:
         in: body
         name: task
         schema:
-          $ref: '#/definitions/model.Task'
+          $ref: '#/definitions/model.TaskCreate'
       produces:
       - application/json
       responses:
@@ -142,12 +171,30 @@ paths:
       summary: Начать отсчет времени по задаче для пользователя
       tags:
       - tasks
-  /tasks/info:
+  /tasks/info/{uid}:
     get:
       consumes:
       - application/json
       description: Получение трудозатрат по пользователю за период задача-сумма часов
-        и минут с сортировкой от большей затраты к меньшей
+        и минут
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: uid
+        required: true
+        type: string
+      - default: 2024-07-01T00:00:00
+        description: Начальная дата
+        in: query
+        name: startDate
+        required: true
+        type: string
+      - default: 2024-07-01T23:59:59
+        description: Конечная дата
+        in: query
+        name: endDate
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -155,7 +202,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Task'
+              $ref: '#/definitions/model.TaskResponse'
             type: array
         "400":
           description: Bad Request
@@ -223,7 +270,7 @@ paths:
       - application/json
       description: Получение данных о пользователе по ID
       parameters:
-      - description: Идентификатор пользователя
+      - description: ID пользователя
         in: path
         name: id
         required: true
@@ -264,9 +311,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/controller.userResponse'
-            type: array
+            $ref: '#/definitions/controller.userResponse'
         "400":
           description: Bad Request
           schema:
@@ -314,9 +359,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/controller.userResponse'
-            type: array
+            $ref: '#/definitions/utils.Pagination'
         "400":
           description: Bad Request
           schema:
@@ -347,7 +390,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.userResponse'
+            $ref: '#/definitions/utils.HTTPSuccess'
         "400":
           description: Bad Request
           schema:

@@ -41,7 +41,7 @@ func CreateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"data": savedUser})
-	log.Println("Пользователь был удачно создан")
+	log.Println("Пользователь был успешно создан")
 }
 
 // UpdateUserData Изменение данных пользователя
@@ -53,7 +53,7 @@ func CreateUser(c *gin.Context) {
 //	@Produce		json
 //	@Param			id		path		string				true	"Идентификатор пользователя"
 //	@Param			user	body		model.UserCreate	true	"Изменение данных пользователя"
-//	@Success		200		{object}	userResponse
+//	@Success		200		{object}	utils.HTTPSuccess
 //	@Failure		400		{object}	utils.HTTPError
 //	@Router			/users/update/{id} [patch]
 func UpdateUserData(c *gin.Context) {
@@ -62,13 +62,13 @@ func UpdateUserData(c *gin.Context) {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	updatedUser, err := user.UpdateData(id, &userCreate)
+	_, err := user.UpdateData(id, &userCreate)
 	if err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	log.Println("Обновление данных о пользователе")
-	c.JSON(http.StatusOK, updatedUser)
+	c.JSON(http.StatusOK, gin.H{"message": "Пользователь успешно обновлен"})
 }
 
 // GetUsersList Получение данных о всех пользователях
@@ -83,7 +83,7 @@ func UpdateUserData(c *gin.Context) {
 //	@Param			sort	query		string	false	"Сортировать данные"				example(asc, desc)
 //	@Param			field	query		string	false	"Поле для сортировки"				example(Id, Surname, Name, Patronymic, Address, PassportSeries, PassportNumber)
 //	@Param			search	query		string	false	"Поиск по полям"
-//	@Success		200		{array}		userResponse
+//	@Success		200		{object}	utils.Pagination
 //	@Failure		400		{object}	utils.HTTPError
 //	@Router			/users/list [get]
 func GetUsersList(c *gin.Context) {
@@ -124,7 +124,7 @@ func GetUsersList(c *gin.Context) {
 //	@Produce		json
 //	@Param			passportSeries	query		int	true	"Поиск по серии паспорта"
 //	@Param			passportNumber	query		int	true	"Поиск по номеру паспорта"
-//	@Success		200				{array}		userResponse
+//	@Success		200				{object}	userResponse
 //	@Failure		400				{object}	utils.HTTPError
 //	@Failure		404				{object}	utils.HTTPError
 //	@Router			/users/info [get]
@@ -147,7 +147,7 @@ func GetUserInfo(c *gin.Context) {
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string	true	"Идентификатор пользователя"
+//	@Param			id	path		string	true	"ID пользователя"
 //	@Success		200	{object}	userResponse
 //	@Failure		404	{object}	utils.HTTPError
 //	@Router			/users/find/{id} [get]
@@ -175,11 +175,11 @@ func GetUserById(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 
-	deletedUser, err := user.DeleteUser(id)
+	_, err := user.DeleteUser(id)
 	if err != nil {
 		utils.NewError(c, http.StatusNotFound, err)
 		return
 	}
-	c.JSON(http.StatusOK, deletedUser)
+	c.JSON(http.StatusOK, gin.H{"message": "Пользователь успешно удален"})
 	fmt.Println("Пользователь удален")
 }

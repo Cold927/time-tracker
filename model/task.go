@@ -1,51 +1,78 @@
 package model
 
 import (
-	"database/sql/driver"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
 	"time-tracker/database"
 )
 
-type statusTask string
-
 const (
-	ACTIVE    statusTask = "ACTIVE"
-	COMPLETED statusTask = "COMPLETED"
+	ACTIVE    string = "ACTIVE"
+	COMPLETED string = "COMPLETED"
 )
 
-func (status *statusTask) Scan(value interface{}) error {
-	*status = statusTask(value.([]byte))
-	return nil
-}
-
-func (status statusTask) Value() (driver.Value, error) {
-	return string(status), nil
-}
-
 type Task struct {
-	ID          uuid.UUID      `gorm:"primarykey;default:uuid_generate_v4()" json:"-"`
+	ID          uuid.UUID      `gorm:"primarykey;default:uuid_generate_v4()" json:"id"`
 	CreatedAt   time.Time      `json:"-"`
 	UpdatedAt   time.Time      `json:"-"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 	Title       string         `gorm:"type:text" json:"title" example:"Новая задача"`
 	Description string         `gorm:"type:text" json:"description" example:"Описание задачи"`
-	StartDate   time.Time      `gorm:"not null;" json:"-"`
-	EndDate     time.Time      `gorm:"not null;" json:"-"`
-	TotalTime   int            `gorm:"not null;" json:"-"`
-	Status      statusTask     `gorm:"type:status_task;not null;" json:"-"`
+	StartDate   time.Time      `gorm:"not null;" json:"start_date"`
+	EndDate     time.Time      `gorm:"not null;" json:"end_date"`
+	TotalTime   int            `gorm:"not null;" json:"total_time"`
+	Status      string         `gorm:"not null;" json:"status"`
 	UserID      uuid.UUID      `gorm:"not null;" json:"-"`
 }
 
-func (task *Task) BeforeCreate(tx *gorm.DB) (err error) {
-	task.Status = ACTIVE
-	return
+type TaskCreate struct {
+	Title       string `gorm:"type:text" json:"title" example:"Новая задача"`
+	Description string `gorm:"type:text" json:"description" example:"Описание задачи"`
+}
+
+type TaskResponse struct {
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	StartDate   time.Time `json:"start_date"`
+	EndDate     time.Time `json:"end_date"`
+	PeriodTime  string    `json:"period_time"`
+	Status      string    `json:"status"`
+}
+
+func (task Task) Info(uid string, startDate string, endDate string) ([]*TaskResponse, error) {
+	var tasks []*TaskResponse
+	err := database.Database.Model(&task).
+		Select(`tasks.title,
+			tasks.description,
+			tasks.start_date,
+			tasks.end_date,
+			CONCAT(
+	       FLOOR(SUM(EXTRACT(EPOCH FROM (end_date - start_date))) / (24 * 3600)), ':',
+	       CASE WHEN FLOOR((SUM(EXTRACT(EPOCH FROM (end_date - start_date))) % (24 * 3600)) / 3600) < 10 THEN '0' ELSE '' END,
+	       FLOOR((SUM(EXTRACT(EPOCH FROM (end_date - start_date))) % (24 * 3600)) / 3600), ':',
+	       CASE WHEN FLOOR((SUM(EXTRACT(EPOCH FROM (end_date - start_date))) % 3600) / 60) < 10 THEN '0' ELSE '' END,
+	       FLOOR((SUM(EXTRACT(EPOCH FROM (end_date - start_date))) % 3600) / 60), ':',
+	       CASE WHEN (SUM(EXTRACT(EPOCH FROM (end_date - start_date))) % 60) < 10 THEN '0' ELSE '' END,
+	       (ROUND(SUM(EXTRACT(EPOCH FROM (end_date - start_date))) % 60))
+	   ) AS period_time, tasks.status`).
+		Where("user_id = ?", uid).
+		Where("start_date >= ?", startDate).
+		Where("end_date <= ?", endDate).
+		Where("status = 'COMPLETED'").
+		Group("id, title, description, start_date, end_date").
+		Order("total_time DESC").
+		Find(&tasks).Error
+	if err != nil {
+		return []*TaskResponse{}, err
+	}
+	return tasks, nil
 }
 
 func (task Task) CountdownStart() (Task, error) {
 	task.StartDate = time.Now()
 	task.EndDate = time.Now()
+	task.Status = ACTIVE
 	if err := database.Database.Create(&task).Error; err != nil {
 		return Task{}, err
 	}
@@ -53,7 +80,9 @@ func (task Task) CountdownStart() (Task, error) {
 }
 
 func (task Task) CountdownEnd(tid string) (Task, error) {
-	err := database.Database.Model(&task).Where("ID=?", tid).Updates(&Task{EndDate: time.Now(), Status: COMPLETED}).Error
+	task.Status = COMPLETED
+	task.EndDate = time.Now()
+	err := database.Database.Where("ID=?", tid).Updates(&task).Error
 	if err != nil {
 		return Task{}, err
 	}
