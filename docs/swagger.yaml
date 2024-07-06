@@ -108,7 +108,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /tasks/countdown/end/{tid}:
+  /api/v1/tasks/countdown/end/{tid}:
     patch:
       consumes:
       - application/json
@@ -136,8 +136,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Закончить отсчет времени по задаче для пользователя
       tags:
-      - tasks
-  /tasks/countdown/start/{uid}:
+      - Задачи
+  /api/v1/tasks/countdown/start/{uid}:
     post:
       consumes:
       - application/json
@@ -170,8 +170,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Начать отсчет времени по задаче для пользователя
       tags:
-      - tasks
-  /tasks/info/{uid}:
+      - Задачи
+  /api/v1/tasks/info/{uid}:
     get:
       consumes:
       - application/json
@@ -214,34 +214,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Получение трудозатрат по пользователю
       tags:
-      - tasks
-  /users/create:
-    post:
-      consumes:
-      - application/json
-      description: Создает нового пользователя
-      parameters:
-      - description: Новый пользователь
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.UserCreate'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/controller.userResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.HTTPError'
-      summary: Создает нового пользователя
-      tags:
-      - users
-  /users/delete/{id}:
+      - Задачи
+  /api/v1/users/delete/{id}:
     delete:
       description: Изменение данных пользователя
       parameters:
@@ -263,8 +237,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Удаление пользователя
       tags:
-      - users
-  /users/find/{id}:
+      - Пользователи
+  /api/v1/users/find/{id}:
     get:
       consumes:
       - application/json
@@ -288,8 +262,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Получение данных о пользователе по ID
       tags:
-      - users
-  /users/info:
+      - Пользователи
+  /api/v1/users/info:
     get:
       consumes:
       - application/json
@@ -322,8 +296,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Получение данных о пользователе по паспорту
       tags:
-      - users
-  /users/list:
+      - Пользователи
+  /api/v1/users/list:
     get:
       consumes:
       - application/json
@@ -366,8 +340,8 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Получение данных о всех пользователях
       tags:
-      - users
-  /users/update/{id}:
+      - Пользователи
+  /api/v1/users/update/{id}:
     patch:
       consumes:
       - application/json
@@ -397,5 +371,31 @@ paths:
             $ref: '#/definitions/utils.HTTPError'
       summary: Изменение данных пользователя
       tags:
-      - users
+      - Пользователи
+  /users/create:
+    post:
+      consumes:
+      - application/json
+      description: Создает нового пользователя
+      parameters:
+      - description: Новый пользователь
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controller.userResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Создает нового пользователя
+      tags:
+      - Пользователи
 swagger: "2.0"

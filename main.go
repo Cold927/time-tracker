@@ -25,9 +25,9 @@ func main() {
 func setSwaggerInfo(cfg config.Config) {
 	docs.SwaggerInfo.Title = "Time Tracker API"
 	docs.SwaggerInfo.Description = "Документация по сервису тайм трекера"
-	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Version = "0.1.0"
 	docs.SwaggerInfo.Host = "localhost:" + cfg.Port
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = "/"
 }
 
 /*
@@ -44,6 +44,7 @@ func loadDatabase(cfg config.Config) {
 Порт запуска указывается в .env в поле APP_PORT
 */
 func serveApplication(cfg config.Config) {
+	gin.SetMode(cfg.RunMode)
 	router := gin.Default()
 	router.Use(Cors(cfg))
 	v1 := router.Group("/api/v1")

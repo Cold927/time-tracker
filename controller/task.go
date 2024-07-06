@@ -15,7 +15,7 @@ var task model.Task
 //
 //	@Summary		Начать отсчет времени по задаче для пользователя
 //	@Description	Начать отсчет времени по задаче для пользователя
-//	@Tags			tasks
+//	@Tags			Задачи
 //	@Accept			json
 //	@Produce		json
 //	@Param			uid		path		string				true	"ID пользователя"
@@ -23,7 +23,7 @@ var task model.Task
 //	@Success		200		{object}	utils.HTTPSuccess
 //	@Failure		400		{object}	utils.HTTPError
 //	@Failure		404		{object}	utils.HTTPError
-//	@Router			/tasks/countdown/start/{uid} [post]
+//	@Router			/api/v1/tasks/countdown/start/{uid} [post]
 func TaskCountdownStart(c *gin.Context) {
 	id := c.Param("uid")
 	uid, err := uuid.Parse(id)
@@ -51,14 +51,14 @@ func TaskCountdownStart(c *gin.Context) {
 //
 //	@Summary		Закончить отсчет времени по задаче для пользователя
 //	@Description	Закончить отсчет времени по задаче для пользователя
-//	@Tags			tasks
+//	@Tags			Задачи
 //	@Accept			json
 //	@Produce		json
 //	@Param			tid	path		string	true	"ID задачи"
 //	@Success		200	{object}	utils.HTTPSuccess
 //	@Failure		400	{object}	utils.HTTPError
 //	@Failure		404	{object}	utils.HTTPError
-//	@Router			/tasks/countdown/end/{tid} [patch]
+//	@Router			/api/v1/tasks/countdown/end/{tid} [patch]
 func TaskCountdownEnd(c *gin.Context) {
 	tid := c.Param("tid")
 	_, err := task.CountdownEnd(tid)
@@ -73,7 +73,7 @@ func TaskCountdownEnd(c *gin.Context) {
 //
 //	@Summary		Получение трудозатрат по пользователю
 //	@Description	Получение трудозатрат по пользователю за период задача-сумма часов и минут
-//	@Tags			tasks
+//	@Tags			Задачи
 //	@Accept			json
 //	@Produce		json
 //	@Param			uid			path		string	true	"ID пользователя"
@@ -82,7 +82,7 @@ func TaskCountdownEnd(c *gin.Context) {
 //	@Success		200			{array}		model.TaskResponse
 //	@Failure		400			{object}	utils.HTTPError
 //	@Failure		404			{object}	utils.HTTPError
-//	@Router			/tasks/info/{uid} [get]
+//	@Router			/api/v1/tasks/info/{uid} [get]
 func TasksInfo(c *gin.Context) {
 	uid := c.Param("uid")
 	startDate := c.Query("startDate")

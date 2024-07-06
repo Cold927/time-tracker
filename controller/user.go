@@ -21,7 +21,7 @@ var userCreate model.UserCreate
 //
 //	@Summary		Создает нового пользователя
 //	@Description	Создает нового пользователя
-//	@Tags			users
+//	@Tags			Пользователи
 //	@Accept			json
 //	@Produce		json
 //	@Param			user	body		model.UserCreate	true	"Новый пользователь"
@@ -48,14 +48,14 @@ func CreateUser(c *gin.Context) {
 //
 //	@Summary		Изменение данных пользователя
 //	@Description	Изменение данных пользователя
-//	@Tags			users
+//	@Tags			Пользователи
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		string				true	"Идентификатор пользователя"
 //	@Param			user	body		model.UserCreate	true	"Изменение данных пользователя"
 //	@Success		200		{object}	utils.HTTPSuccess
 //	@Failure		400		{object}	utils.HTTPError
-//	@Router			/users/update/{id} [patch]
+//	@Router			/api/v1/users/update/{id} [patch]
 func UpdateUserData(c *gin.Context) {
 	id := c.Param("id")
 	if err := c.ShouldBindJSON(&userCreate); err != nil {
@@ -75,7 +75,7 @@ func UpdateUserData(c *gin.Context) {
 //
 //	@Summary		Получение данных о всех пользователях
 //	@Description	Получение данных о всех пользователях
-//	@Tags			users
+//	@Tags			Пользователи
 //	@Accept			json
 //	@Produce		json
 //	@Param			page	query		string	false	"Укажите с какой страницы смотреть"	default(1)
@@ -85,7 +85,7 @@ func UpdateUserData(c *gin.Context) {
 //	@Param			search	query		string	false	"Поиск по полям"
 //	@Success		200		{object}	utils.Pagination
 //	@Failure		400		{object}	utils.HTTPError
-//	@Router			/users/list [get]
+//	@Router			/api/v1/users/list [get]
 func GetUsersList(c *gin.Context) {
 	var pagination utils.Pagination
 	field := utils.ToFormatCase(c.DefaultQuery("field", "Id"))
@@ -119,7 +119,7 @@ func GetUsersList(c *gin.Context) {
 //
 //	@Summary		Получение данных о пользователе по паспорту
 //	@Description	Получение данных о пользователе по серии и номеру паспорта
-//	@Tags			users
+//	@Tags			Пользователи
 //	@Accept			json
 //	@Produce		json
 //	@Param			passportSeries	query		int	true	"Поиск по серии паспорта"
@@ -127,7 +127,7 @@ func GetUsersList(c *gin.Context) {
 //	@Success		200				{object}	userResponse
 //	@Failure		400				{object}	utils.HTTPError
 //	@Failure		404				{object}	utils.HTTPError
-//	@Router			/users/info [get]
+//	@Router			/api/v1/users/info [get]
 func GetUserInfo(c *gin.Context) {
 	series, _ := strconv.Atoi(c.Query("passportSeries"))
 	number, _ := strconv.Atoi(c.Query("passportNumber"))
@@ -144,13 +144,13 @@ func GetUserInfo(c *gin.Context) {
 //
 //	@Summary		Получение данных о пользователе по ID
 //	@Description	Получение данных о пользователе по ID
-//	@Tags			users
+//	@Tags			Пользователи
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		string	true	"ID пользователя"
 //	@Success		200	{object}	userResponse
 //	@Failure		404	{object}	utils.HTTPError
-//	@Router			/users/find/{id} [get]
+//	@Router			/api/v1/users/find/{id} [get]
 func GetUserById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -166,12 +166,12 @@ func GetUserById(c *gin.Context) {
 //
 //	@Summary		Удаление пользователя
 //	@Description	Изменение данных пользователя
-//	@Tags			users
+//	@Tags			Пользователи
 //	@Produce		json
 //	@Success		200	{object}	utils.HTTPSuccess
 //	@Failure		404	{object}	utils.HTTPError
 //	@Param			id	path		string	true	"Идентификатор пользователя"
-//	@Router			/users/delete/{id} [delete]
+//	@Router			/api/v1/users/delete/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 

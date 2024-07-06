@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	Port string `envconfig:"APP_PORT"`
-	Cors struct {
+	RunMode string `envconfig:"GIN_MODE"`
+	Port    string `envconfig:"APP_PORT"`
+	Cors    struct {
 		AllowOrigins string `envconfig:"CORS"`
 	}
 	Postgres struct {

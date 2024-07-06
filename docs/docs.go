@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/tasks/countdown/end/{tid}": {
+        "/api/v1/tasks/countdown/end/{tid}": {
             "patch": {
                 "description": "Закончить отсчет времени по задаче для пользователя",
                 "consumes": [
@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tasks"
+                    "Задачи"
                 ],
                 "summary": "Закончить отсчет времени по задаче для пользователя",
                 "parameters": [
@@ -59,7 +59,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tasks/countdown/start/{uid}": {
+        "/api/v1/tasks/countdown/start/{uid}": {
             "post": {
                 "description": "Начать отсчет времени по задаче для пользователя",
                 "consumes": [
@@ -69,7 +69,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tasks"
+                    "Задачи"
                 ],
                 "summary": "Начать отсчет времени по задаче для пользователя",
                 "parameters": [
@@ -111,7 +111,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tasks/info/{uid}": {
+        "/api/v1/tasks/info/{uid}": {
             "get": {
                 "description": "Получение трудозатрат по пользователю за период задача-сумма часов и минут",
                 "consumes": [
@@ -121,7 +121,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "tasks"
+                    "Задачи"
                 ],
                 "summary": "Получение трудозатрат по пользователю",
                 "parameters": [
@@ -174,54 +174,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/create": {
-            "post": {
-                "description": "Создает нового пользователя",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Создает нового пользователя",
-                "parameters": [
-                    {
-                        "description": "Новый пользователь",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.UserCreate"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/controller.userResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/delete/{id}": {
+        "/api/v1/users/delete/{id}": {
             "delete": {
                 "description": "Изменение данных пользователя",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Пользователи"
                 ],
                 "summary": "Удаление пользователя",
                 "parameters": [
@@ -249,7 +209,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/find/{id}": {
+        "/api/v1/users/find/{id}": {
             "get": {
                 "description": "Получение данных о пользователе по ID",
                 "consumes": [
@@ -259,7 +219,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Пользователи"
                 ],
                 "summary": "Получение данных о пользователе по ID",
                 "parameters": [
@@ -287,7 +247,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/info": {
+        "/api/v1/users/info": {
             "get": {
                 "description": "Получение данных о пользователе по серии и номеру паспорта",
                 "consumes": [
@@ -297,7 +257,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Пользователи"
                 ],
                 "summary": "Получение данных о пользователе по паспорту",
                 "parameters": [
@@ -338,7 +298,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/list": {
+        "/api/v1/users/list": {
             "get": {
                 "description": "Получение данных о всех пользователях",
                 "consumes": [
@@ -348,7 +308,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Пользователи"
                 ],
                 "summary": "Получение данных о всех пользователях",
                 "parameters": [
@@ -403,7 +363,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/update/{id}": {
+        "/api/v1/users/update/{id}": {
             "patch": {
                 "description": "Изменение данных пользователя",
                 "consumes": [
@@ -413,7 +373,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Пользователи"
                 ],
                 "summary": "Изменение данных пользователя",
                 "parameters": [
@@ -439,6 +399,46 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/utils.HTTPSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/create": {
+            "post": {
+                "description": "Создает нового пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Пользователи"
+                ],
+                "summary": "Создает нового пользователя",
+                "parameters": [
+                    {
+                        "description": "Новый пользователь",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/controller.userResponse"
                         }
                     },
                     "400": {
