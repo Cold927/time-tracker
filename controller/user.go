@@ -67,30 +67,30 @@ func UpdateUserData(c *gin.Context) {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	fmt.Println("Обновление данных о пользователе")
+	log.Println("Обновление данных о пользователе")
 	c.JSON(http.StatusOK, updatedUser)
 }
 
-// GetUsersInfo Получение данных о всех пользователях
+// GetUsersList Получение данных о всех пользователях
 //
 //	@Summary		Получение данных о всех пользователях
 //	@Description	Получение данных о всех пользователях
 //	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Param			page			query		string	false	"Укажите с какой страницы смотреть"	default(1)
-//	@Param			limit			query		string	false	"Укажите какое количество выводить"	default(10)
-//	@Param			sort			query		string	false	"Сортировать данные"				example(asc, desc)
-//	@Param			field			query		string	false	"Поле для сортировки"				example(Id, Surname, Name, Patronymic, Address, passport_series, passport_number)
-//	@Param			passportSeries	query		int		false	"Поиск по серии паспорта"
-//	@Param			passportNumber	query		int		false	"Поиск по номеру паспорта"
-//	@Param			search			query		string	false	"Поиск по полям"
-//	@Success		200				{array}		userResponse
-//	@Failure		400				{object}	utils.HTTPError
-//	@Router			/users/info [get]
-func GetUsersInfo(c *gin.Context) {
+//	@Param			page	query		string	false	"Укажите с какой страницы смотреть"	default(1)
+//	@Param			limit	query		string	false	"Укажите какое количество выводить"	default(10)
+//	@Param			sort	query		string	false	"Сортировать данные"				example(asc, desc)
+//	@Param			field	query		string	false	"Поле для сортировки"				example(Id, Surname, Name, Patronymic, Address, PassportSeries, PassportNumber)
+//	@Param			search	query		string	false	"Поиск по полям"
+//	@Success		200		{array}		userResponse
+//	@Failure		400		{object}	utils.HTTPError
+//	@Router			/users/list [get]
+func GetUsersList(c *gin.Context) {
 	var pagination utils.Pagination
-	sort := c.DefaultQuery("field", "Id") + " " + c.DefaultQuery("sort", "desc")
+	field := utils.ToFormatCase(c.DefaultQuery("field", "Id"))
+	search := c.DefaultQuery("search", "")
+	sort := field + " " + c.DefaultQuery("sort", "desc")
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
@@ -106,13 +106,38 @@ func GetUsersInfo(c *gin.Context) {
 	pagination.Limit = limit
 	pagination.Sort = sort
 
-	listInfo, err := user.ListUsers(pagination)
+	listInfo, err := user.ListUsers(pagination, field, search)
 	if err != nil {
 		utils.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	c.JSON(http.StatusOK, listInfo)
-	fmt.Println("Получение данных о всех пользователях")
+	log.Println("Получение данных о всех пользователях")
+}
+
+// GetUserInfo Получение данных о пользователе по паспорту
+//
+//	@Summary		Получение данных о пользователе по паспорту
+//	@Description	Получение данных о пользователе по серии и номеру паспорта
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			passportSeries	query		int	true	"Поиск по серии паспорта"
+//	@Param			passportNumber	query		int	true	"Поиск по номеру паспорта"
+//	@Success		200				{array}		userResponse
+//	@Failure		400				{object}	utils.HTTPError
+//	@Failure		404				{object}	utils.HTTPError
+//	@Router			/users/info [get]
+func GetUserInfo(c *gin.Context) {
+	series, _ := strconv.Atoi(c.Query("passportSeries"))
+	number, _ := strconv.Atoi(c.Query("passportNumber"))
+
+	userInfo, err := user.Info(series, number)
+	if err != nil {
+		utils.NewError(c, http.StatusNotFound, err)
+		return
+	}
+	c.JSON(http.StatusOK, userInfo)
 }
 
 // GetUserById Получение данных о пользователе

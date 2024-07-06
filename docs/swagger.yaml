@@ -246,6 +246,42 @@ paths:
     get:
       consumes:
       - application/json
+      description: Получение данных о пользователе по серии и номеру паспорта
+      parameters:
+      - description: Поиск по серии паспорта
+        in: query
+        name: passportSeries
+        required: true
+        type: integer
+      - description: Поиск по номеру паспорта
+        in: query
+        name: passportNumber
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controller.userResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Получение данных о пользователе по паспорту
+      tags:
+      - users
+  /users/list:
+    get:
+      consumes:
+      - application/json
       description: Получение данных о всех пользователях
       parameters:
       - default: "1"
@@ -264,18 +300,10 @@ paths:
         name: sort
         type: string
       - description: Поле для сортировки
-        example: Id, Surname, Name, Patronymic, Address, passport_series, passport_number
+        example: Id, Surname, Name, Patronymic, Address, PassportSeries, PassportNumber
         in: query
         name: field
         type: string
-      - description: Поиск по серии паспорта
-        in: query
-        name: passportSeries
-        type: integer
-      - description: Поиск по номеру паспорта
-        in: query
-        name: passportNumber
-        type: integer
       - description: Поиск по полям
         in: query
         name: search

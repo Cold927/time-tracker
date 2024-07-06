@@ -64,7 +64,8 @@ func serveApplication() {
 	{
 		user.POST("/create", controller.CreateUser)
 		user.PATCH("/update/:id", controller.UpdateUserData)
-		user.GET("/info", controller.GetUsersInfo)
+		user.GET("/list", controller.GetUsersList)
+		user.GET("/info", controller.GetUserInfo)
 		user.GET("/find/:id", controller.GetUserById)
 		user.DELETE("/delete/:id", controller.DeleteUser)
 	}

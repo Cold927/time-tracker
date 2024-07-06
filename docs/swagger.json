@@ -253,6 +253,60 @@
         },
         "/users/info": {
             "get": {
+                "description": "Получение данных о пользователе по серии и номеру паспорта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Получение данных о пользователе по паспорту",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Поиск по серии паспорта",
+                        "name": "passportSeries",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Поиск по номеру паспорта",
+                        "name": "passportNumber",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controller.userResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/list": {
+            "get": {
                 "description": "Получение данных о всех пользователях",
                 "consumes": [
                     "application/json"
@@ -288,21 +342,9 @@
                     },
                     {
                         "type": "string",
-                        "example": "Id, Surname, Name, Patronymic, Address, passport_series, passport_number",
+                        "example": "Id, Surname, Name, Patronymic, Address, PassportSeries, PassportNumber",
                         "description": "Поле для сортировки",
                         "name": "field",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Поиск по серии паспорта",
-                        "name": "passportSeries",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Поиск по номеру паспорта",
-                        "name": "passportNumber",
                         "in": "query"
                     },
                     {

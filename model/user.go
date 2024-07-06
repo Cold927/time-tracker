@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
@@ -68,12 +69,22 @@ func (user User) UpdateData(uid string, data *UserCreate) (User, error) {
 	return newUser, nil
 }
 
-func (user User) ListUsers(pagination utils.Pagination) (*utils.Pagination, error) {
+func (user User) ListUsers(pagination utils.Pagination, field string, search string) (*utils.Pagination, error) {
 	var users []*User
-
-	database.Database.Scopes(utils.Paginate(&user, &pagination, database.Database)).Where("").Find(&users)
+	if search != "" {
+		database.Database.Scopes(utils.Paginate(&user, &pagination, database.Database)).Where(fmt.Sprintf(`%s ILIKE '%%%s%%'`, field, search)).Find(&users)
+	} else {
+		database.Database.Scopes(utils.Paginate(&user, &pagination, database.Database)).Find(&users)
+	}
 	pagination.Rows = users
 	return &pagination, nil
+}
+
+func (user User) Info(series int, number int) (User, error) {
+	if err := database.Database.Find(&user, "passport_series=? AND passport_number=?", series, number).Error; err != nil {
+		return User{}, err
+	}
+	return user, nil
 }
 
 func (user User) DeleteUser(uid string) (User, error) {

@@ -18,8 +18,11 @@ func StartTaskMigration(db *gorm.DB) {
 		}
 	}
 	// Создание таблицы задач
-	db.AutoMigrate(&model.Task{})
+	if err := db.AutoMigrate(&model.Task{}); err != nil {
+		log.Fatalf("Ошибка при миграции таблицы Task: %v", err)
+	}
 
+	// Функция расчета затрат времени на задачу
 	if err := db.Exec(`
         CREATE OR REPLACE FUNCTION calculate_total_time()
         RETURNS TRIGGER AS $$
