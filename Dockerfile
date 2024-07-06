@@ -1,30 +1,23 @@
-# Use Go v1.22.4 as the base image
-FROM golang:1.22.5-alpine
+FROM golang:1.22.5-alpine as builder
 
-# Create a new user in the docker image
-RUN adduser --disabled-password --gecos '' gouser
+WORKDIR /app
 
-# Create a new directory for goserve files and set the path in the container
-RUN mkdir -p /home/gouser/goserve
+COPY go.* ./
+RUN go mod download
 
-# Set the working directory in the container
-WORKDIR /home/gouser/goserve
+COPY . ./
 
-# Copy the project files into the container
-COPY . .
+RUN go build -v -o server ./cmd/main.go
 
-# Set the ownership of the goserve directory to gouser
-RUN chown -R gouser:gouser /home/gouser/goserve
+FROM debian:12.4-slim
+RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive \
+    rm -rf /var/lib/apt/lists/*
 
-# Switch to the gouser user
-USER gouser
+COPY --from=builder /app/server /app/server
+COPY --from=builder /app/.env.docker /app/.env.docker
+COPY --from=builder /app/docs app/docs
 
-# Download dependencies and build the project
-RUN go mod tidy
-RUN go build -o build/server cmd/main.go
+ENV APP_ENV docker
+ENV PORT ${Port}
 
-# Expose the server port (replace 8080 with your actual port)
-EXPOSE 8080
-
-# Command to run the server
-CMD ["./build/server"]
+CMD [ "app/server" ]
